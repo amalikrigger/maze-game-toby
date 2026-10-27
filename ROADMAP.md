@@ -18,16 +18,19 @@ Capstone, Trimester 1, Mr. Krigger. **Due Fri Nov 20, 11:59 PM.**
 - [x] Smooth sliding movement, arrow keys and W A S D, hold to keep moving
 - [x] 3D view with a camera that follows the player
 - [x] Reaching the goal opens the next level
-- [x] Win screen after level 3, showing the time for each level, with Play Again
-- [x] Enemies: Chaser, Hunter and Patroller
+- [x] Win screen after the last level, showing the time for each level, with Play Again
+- [x] Enemies: Chaser, Hunter, Patroller and Shooter
 - [x] Levels made twice as big (31 x 25) with more enemies placed on the route:
       level 1 has 4, level 2 has 7, level 3 has 8. A test robot beat each level 63 to 64 times out of 64.
 - [x] Enemies can't stand on the same square (so they don't merge into one)
+- [x] Enemies pass through Patrollers (so a Patroller can't block a hallway)
+- [x] Level 4 (31 x 25) with a new enemy, the Shooter: walks like a Hunter, aims a 4-square beam
+      in a straight line (walls stop it), warns you for 0.8 s, then fires. Robot won 64 / 64.
 - [x] Getting caught: lose a life, everyone back to the start, 1 second of blinking
 - [x] 3 lives per level, Game Over screen, Play Again retries the level
 - [x] Timer per level, pauses on pop-up screens
 - [x] HOW-IT-WORKS.md for the final document
-- [ ] Toby plays all 3 levels by hand and checks the controls and camera feel right
+- [ ] Toby plays all 4 levels by hand and checks the controls and camera feel right
 - [ ] Tune speeds in `js/config.js` if the levels are too easy or too hard
 
 ## Phase 2: Could have (before the Nov 13 freeze)
@@ -75,15 +78,19 @@ PROJECT FACTS
   (use 8001 if 8000 is busy). Opening index.html by double-click does NOT work.
 - Architecture: the RULES are grid-based and know nothing about 3D; the RENDERER only draws.
   - js/levels.js: ASCII levels, each 31 wide x 25 tall, with loops so enemies can be escaped.
-    Letters: # wall, P start, G goal, E Chaser, H Hunter,
+    Letters: # wall, P start, G goal, E Chaser, H Hunter, S Shooter,
     R Patroller (left-right), V Patroller (up-down), space floor.
-    L1: 2E 2 patrol. L2: 4E 3 patrol. L3: 2H 3E 3 patrol. Enemies sit on/next to the P->G route.
+    L1: 2E 2 patrol. L2: 4E 3 patrol. L3: 2H 3E 3 patrol. L4: 2S 3E 3 patrol.
+    Enemies sit on/next to the P->G route.
   - js/grid.js: parseLevel, isWall, findPath (BFS), validateLevel (equal rows, border walls,
     one P, one G, P->G reachable). main.js validates all levels at startup.
-  - js/enemies.js: BRAINS { greedy, hunter, patrol }, each returns [dx, dy] or null.
+  - js/enemies.js: BRAINS { greedy, hunter, patrol, shooter (= hunter) }, each returns [dx, dy]
+    or null. Also beamSquares and lineOfFire for the Shooter's 4-square beam.
   - js/game.js: Game class. States "playing" | "gameOver" | "won". Movers have x,y (rules),
     fromX,fromY,progress (visual slide). Square changes at slide START; catch checked after
-    every player or enemy step. Enemies never step onto another enemy. Lives 3 per level,
+    every player or enemy step. Enemies never step onto another non-Patroller enemy; Patrollers
+    phase through everyone (isBlocked). Shooters (updateShooter): aim 800 ms (floor flashes),
+    fire 300 ms (deadly), rest 1500 ms. Lives 3 per level,
     timer per level, 1s grace after caught
     (enemies frozen, player blinks). view() returns draw positions for the renderer.
   - js/renderer.js: three.js scene, InstancedMesh walls, follow camera clamped to maze edges.

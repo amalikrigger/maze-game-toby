@@ -2,6 +2,7 @@
 //
 //   #  wall               P  player start        G  goal
 //   E  Chaser enemy       H  Hunter enemy
+//   S  Shooter enemy (zaps you from up to 4 squares away in a straight line)
 //   R  Patroller that walks left and right
 //   V  Patroller that walks up and down
 //   (space)  open floor
@@ -103,6 +104,37 @@ export const LEVELS = [
     "# # # #           #     #     #",
     "# # # ############# ######### #",
     "#   #                        P#",
+    "###############################",
+  ],
+
+  // Level 4: 2 Shooters, 3 Chasers and 3 Patrollers. Start top-right, goal bottom-left.
+  // Both Shooters guard the long hallways near the bottom. When the floor
+  // flashes blue, step out of that line before the beam fires!
+  [
+    "###############################",
+    "#               #         #  P#",
+    "# ### ### ### # # # ### # # # #",
+    "#       #     # # #     # # # #",
+    "# ##### # ##### ####### # # # #",
+    "# #   # #               #   # #",
+    "# # # # # # ################# #",
+    "# # # # # #         #         #",
+    "# # # # # ######### # ####### #",
+    "#   # # # #       # #         #",
+    "##### # # # # # # # # # # ### #",
+    "#       # # # # # # # #   #   #",
+    "# ### # # ### # # # # # ### # #",
+    "#   # # #   # # # # #   #V  # #",
+    "# # # # # # # # # # ##### # # #",
+    "#   # # #     #   # #     # # #",
+    "# # # # ########### # ### # # #",
+    "# # # #          V# #     # # #",
+    "# # # ####### ### # ##### # # #",
+    "# #   #  V  #   # #          E#",
+    "# # # # # # ### # # ### #######",
+    "# #             # #    S      #",
+    "# ####### ####### ########### #",
+    "#G         E         S       E#",
     "###############################",
   ],
 ];

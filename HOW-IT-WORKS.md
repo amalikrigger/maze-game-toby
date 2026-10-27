@@ -29,6 +29,7 @@ Each level is a list of text rows:
 | `G` | the goal |
 | `E` | Chaser enemy |
 | `H` | Hunter enemy |
+| `S` | Shooter enemy |
 | `R` / `V` | Patroller (walks left-right / up-down) |
 | space | open floor |
 
@@ -67,7 +68,7 @@ the two squares. When `progress` reaches 1, you have arrived and can move again.
 is still held. **Tapping** a key while you're sliding is remembered, and that move happens as
 soon as you arrive, so quick taps don't get lost.
 
-## 4. The three enemies (`js/enemies.js`)
+## 4. The four enemies (`js/enemies.js`)
 
 Every enemy has a "brain": a function that answers *"Which way should I step?"*
 Each enemy type gets a turn every so many milliseconds (`stepMs` in `config.js`).
@@ -96,25 +97,51 @@ The Patroller ignores you completely. It walks in a straight line and turns arou
 square is a wall. Patrollers are placed in hallways that cross your route to the goal, so you
 have to time your run past them.
 
-### Enemies don't stack
-An enemy will never step onto a square where another enemy is standing. It waits for its next
-turn instead. Without this rule, Chasers that start near each other would all follow the same
-steps, end up on the same square, and look like one enemy.
+### Shooter (`S`): a Hunter with a beam
+The Shooter walks exactly like a Hunter (same BFS brain). Its extra trick is in `updateShooter`
+in `js/game.js`. When you are in a **straight line** with it (up, down, left or right), no more
+than **4 squares** away, and **no wall** is in between, it:
+
+1. **Aims** (0.8 seconds): it stops, and the squares its beam will hit flash blue on the floor.
+   This is your warning. Step out of that line!
+2. **Fires** (0.3 seconds): a bright beam fills those squares. If you are on one of them, or you
+   walk into it while it is firing, you are zapped and lose a life.
+3. **Rests** (1.5 seconds): it walks like a Hunter and can't aim again until the rest is over.
+
+`beamSquares` works out which squares the beam covers: it steps 1, 2, 3, 4 squares in the
+direction and stops early at a wall. `lineOfFire` checks the 4 directions and returns the one
+you are in (or nothing). All the times and the range are in `config.js` under `shooter`.
+
+### Enemies don't stack, but they pass through Patrollers
+An enemy will never step onto a square where another Chaser, Hunter or Shooter is standing. It
+waits for its next turn instead. Without this rule, Chasers that start near each other would all
+follow the same steps, end up on the same square, and look like one enemy.
+
+**Patrollers are the exception** (`isBlocked` in `js/game.js`). Other enemies walk right through
+them, and they walk through everyone. Patrollers live in hallways, so if they could block, a
+Patroller going back and forth would keep the other enemies stuck behind it.
 
 ### Where the enemies are placed
 Every level is 31 squares wide and 25 tall, and the enemies are put on or right next to the route
-from `P` to `G`, so you have to deal with them. Level 1 has 4 enemies, level 2 has 7, and level 3
-has 8 (including 2 Hunters). The mazes have **loops** (more than one way around), so you can
-always lead an enemy around a loop and escape. The player is about 3 times faster than any enemy.
+from `P` to `G`, so you have to deal with them. Level 1 has 4 enemies, level 2 has 7, level 3
+has 8 (including 2 Hunters) and level 4 has 8 (including 2 Shooters). The mazes have **loops**
+(more than one way around), so you can always lead an enemy around a loop and escape. Level 4 was
+also checked to make sure no single square on the route is the only way through. The player is
+about 3 times faster than any enemy.
 
 To make sure every level can be beaten, a test robot played each level 64 times using the real game
-rules. It only looks at the enemies every quarter second, like a person would.
+rules. It only looks at the enemies every 0.2 to 0.35 seconds, like a person would, steps out of
+Shooter lines, and makes a run for it if it has been stuck for a long time.
 
 | Level | Enemies | Robot won | Robot caught (average) |
 | --- | --- | --- | --- |
-| 1 | 2 Chasers, 2 Patrollers | 64 / 64 | 0 times |
-| 2 | 4 Chasers, 3 Patrollers | 63 / 64 | 0.05 times |
+| 1 | 2 Chasers, 2 Patrollers | 64 / 64 | 0.5 times |
+| 2 | 4 Chasers, 3 Patrollers | 58 / 64 | 0.33 times |
 | 3 | 2 Hunters, 3 Chasers, 3 Patrollers | 64 / 64 | 1 time |
+| 4 | 2 Shooters, 3 Chasers, 3 Patrollers | 64 / 64 | 0.11 times |
+
+Level 2 is the hardest: now that the Chasers pass through Patrollers, all 4 of them can follow
+you into the top-left corner and block the only hallway out. Don't go in there!
 
 The robot can see the whole maze, but you only see the part near you, so expect it to be harder
 for a person. That's what the playtest is for.

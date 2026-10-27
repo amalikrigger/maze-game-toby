@@ -26,7 +26,9 @@ Use a different number, like `python3 -m http.server 8001`, and open <http://loc
 - Move with the **arrow keys** or **W A S D**. Hold a key to keep moving.
 - Reach the **green pad** to go to the next level.
 - Don't get caught by the enemies. You have **3 lives** on each level.
-- Finish level 3 to win.
+- **Shooters** (cyan) zap you from up to 4 squares away in a straight line. When the floor
+  flashes blue, step out of that line!
+- Finish level 4 to win.
 
 ## Project files
 
@@ -36,7 +38,7 @@ Use a different number, like `python3 -m http.server 8001`, and open <http://loc
 | `css/style.css` | Colors and layout |
 | `js/levels.js` | The mazes, drawn with letters |
 | `js/grid.js` | Turns letters into a grid, checks walls, finds paths |
-| `js/enemies.js` | The three enemy brains |
+| `js/enemies.js` | The four enemy brains and the Shooter's beam |
 | `js/game.js` | The rules: moving, catching, lives, timer, winning |
 | `js/renderer.js` | Draws everything in 3D with three.js |
 | `js/input.js` | Reads the keyboard |

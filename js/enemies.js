@@ -40,4 +40,28 @@ function patrol(enemy, grid) {
   return [dx, dy];
 }
 
-export const BRAINS = { greedy, hunter, patrol };
+// SHOOTER (letter S) walks exactly like a Hunter. Its beam attack is in game.js (updateShooter).
+export const BRAINS = { greedy, hunter, patrol, shooter: hunter };
+
+// The squares a beam would hit, starting next to `from` and going in direction `dir`.
+// It stops after `range` squares, or sooner if it hits a wall.
+export function beamSquares(grid, from, [dx, dy], range) {
+  const squares = [];
+  for (let step = 1; step <= range; step++) {
+    const x = from.x + dx * step;
+    const y = from.y + dy * step;
+    if (isWall(grid, x, y)) break;
+    squares.push({ x, y });
+  }
+  return squares;
+}
+
+// Is the player in a beam's path from this Shooter? Returns the direction to fire, or null.
+export function lineOfFire(grid, shooter, player, range) {
+  for (const dir of DIRECTIONS) {
+    if (beamSquares(grid, shooter, dir, range).some((s) => s.x === player.x && s.y === player.y)) {
+      return dir;
+    }
+  }
+  return null;
+}

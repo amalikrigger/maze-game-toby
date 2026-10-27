@@ -12,6 +12,14 @@ export const CONFIG = {
     greedy: { stepMs: 450, color: "#ef4444" }, // Chaser (letter E)
     hunter: { stepMs: 500, color: "#a855f7" }, // Hunter (letter H)
     patrol: { stepMs: 350, color: "#f97316" }, // Patroller (letters R and V)
+    shooter: {                                 // Shooter (letter S)
+      stepMs: 600,
+      color: "#22d3ee",
+      range: 4,          // how many squares the beam reaches (walls stop it)
+      aimMs: 800,        // warning time: the squares light up before it fires
+      fireMs: 300,       // how long the beam stays deadly
+      cooldownMs: 1500,  // rest time before it can aim again
+    },
   },
 
   colors: {

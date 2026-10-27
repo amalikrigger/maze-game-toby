@@ -10,6 +10,7 @@
   --greedy: #ef4444;
   --hunter: #a855f7;
   --patrol: #f97316;
+  --shooter: #22d3ee;
 }
 
 * { box-sizing: border-box; }
@@ -120,3 +121,4 @@ h1 { margin: 12px 0 4px; font-size: 1.8rem; }
 .dot.greedy { background: var(--greedy); }
 .dot.hunter { background: var(--hunter); transform: rotate(45deg); border-radius: 2px; }
 .dot.patrol { background: var(--patrol); border-radius: 2px; }
+.dot.shooter { background: var(--shooter); clip-path: polygon(50% 0, 100% 100%, 0 100%); border-radius: 0; }

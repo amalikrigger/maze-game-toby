@@ -9,6 +9,7 @@ export const ENEMY_LETTERS = {
   H: { type: "hunter" },
   R: { type: "patrol", dir: [1, 0] }, // starts walking right
   V: { type: "patrol", dir: [0, 1] }, // starts walking down
+  S: { type: "shooter" },
 };
 
 // The four ways you can step: up, down, left, right

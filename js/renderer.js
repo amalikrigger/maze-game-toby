@@ -54,10 +54,20 @@ export class Renderer {
       greedy: { geometry: new THREE.SphereGeometry(0.32, 32, 16), height: 0.32 },
       hunter: { geometry: new THREE.OctahedronGeometry(0.38), height: 0.4 },
       patrol: { geometry: new THREE.BoxGeometry(0.55, 0.55, 0.55), height: 0.3 },
+      shooter: { geometry: new THREE.ConeGeometry(0.34, 0.7, 6), height: 0.35 },
     };
     for (const [type, look] of Object.entries(this.enemyLooks)) {
       look.material = glow(CONFIG.enemies[type].color, 0.35);
     }
+
+    // Shooter beams. One 1x1x1 box, stretched to the right size each frame.
+    //   aim  = a flashing strip on the floor showing which squares are about to be hit
+    //   fire = a bright, tall beam
+    this.beamGeometry = new THREE.BoxGeometry(1, 1, 1);
+    const beamColor = CONFIG.enemies.shooter.color;
+    this.beamAimMaterial = new THREE.MeshBasicMaterial({ color: beamColor, transparent: true, opacity: 0.4, depthWrite: false });
+    this.beamFireMaterial = new THREE.MeshBasicMaterial({ color: "#e0faff", transparent: true, opacity: 0.9 });
+    this.beamMeshes = [];
 
     this.levelGroup = null;
     this.enemyMeshes = [];
@@ -121,6 +131,15 @@ export class Renderer {
       return mesh;
     });
 
+    // A beam for every Shooter (null for other enemies)
+    this.beamMeshes = grid.enemies.map((enemy) => {
+      if (enemy.type !== "shooter") return null;
+      const beam = new THREE.Mesh(this.beamGeometry, this.beamAimMaterial);
+      beam.visible = false;
+      this.levelGroup.add(beam);
+      return beam;
+    });
+
     this.scene.add(this.levelGroup);
     this.levelWidth = grid.width;
     this.levelHeight = grid.height;
@@ -174,6 +193,26 @@ export class Renderer {
     return new THREE.Vector3(f.x, height, f.z + distanceBack);
   }
 
+  // Stretch a beam box over the squares the Shooter is aiming at (or firing at)
+  drawBeam(mesh, beam) {
+    mesh.visible = Boolean(beam && beam.length > 0);
+    if (!mesh.visible) return;
+
+    const [dx, dy] = beam.dir;
+    const firing = beam.phase === "fire";
+    const width = firing ? 0.3 : 0.9;   // a thin bright beam, or a wide floor strip
+    const height = firing ? 0.3 : 0.04;
+    mesh.material = firing ? this.beamFireMaterial : this.beamAimMaterial;
+
+    // The beam covers squares 1..length away from the Shooter, so its middle is (length + 1) / 2 away
+    mesh.scale.set(dx !== 0 ? beam.length : width, height, dy !== 0 ? beam.length : width);
+    mesh.position.set(
+      beam.x + (dx * (beam.length + 1)) / 2,
+      firing ? 0.35 : 0.03,
+      beam.y + (dy * (beam.length + 1)) / 2,
+    );
+  }
+
   // Draw one frame
   render(dtMs, view) {
     const dt = dtMs / 1000;
@@ -187,7 +226,13 @@ export class Renderer {
       mesh.position.x = enemy.x;
       mesh.position.z = enemy.y;
       mesh.rotation.y += dt * 2; // spin, just for looks
+
+      const beamMesh = this.beamMeshes[i];
+      if (beamMesh) this.drawBeam(beamMesh, enemy.beam);
     });
+
+    // Make the aim warning flash fast so it gets your attention
+    this.beamAimMaterial.opacity = 0.35 + Math.sin(this.clock * 20) * 0.2;
 
     // Make the goal gently pulse so it is easy to spot
     this.goal.material.emissiveIntensity = 0.5 + Math.sin(this.clock * 4) * 0.3;
