@@ -1,0 +1,122 @@
+/* Colors match the starter game from the kickoff page */
+:root {
+  --bg: #111827;
+  --text: #f3f4f6;
+  --muted: #9ca3af;
+  --panel: #1f2937;
+  --wall: #3b82f6;
+  --goal: #22c55e;
+  --player: #facc15;
+  --greedy: #ef4444;
+  --hunter: #a855f7;
+  --patrol: #f97316;
+}
+
+* { box-sizing: border-box; }
+
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  padding: 0 12px 24px;
+  background: var(--bg);
+  color: var(--text);
+  font: 18px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  text-align: center;
+}
+
+h1 { margin: 12px 0 4px; font-size: 1.8rem; }
+
+#hud {
+  display: flex;
+  gap: 28px;
+  justify-content: center;
+  font-variant-numeric: tabular-nums; /* keeps the timer from wiggling */
+}
+
+#lives { color: var(--greedy); letter-spacing: 2px; }
+
+#msg { margin: 4px 0 8px; min-height: 1.5em; color: var(--muted); }
+
+/* The box the 3D game is drawn in */
+#stage {
+  position: relative;
+  width: min(960px, 100%);
+  height: min(68vh, 640px);
+  margin: 0 auto;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0b1020;
+}
+
+#stage canvas { display: block; width: 100%; height: 100%; }
+
+.notice {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.notice code {
+  background: var(--panel);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font: 16px ui-monospace, Menlo, Consolas, monospace;
+}
+
+/* Pop-up screens */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 14, 28, 0.75);
+}
+
+.card {
+  background: var(--panel);
+  border: 3px solid var(--goal);
+  border-radius: 14px;
+  padding: 24px 36px;
+  min-width: 280px;
+}
+
+.overlay[data-kind="lose"] .card { border-color: var(--greedy); }
+
+.card h2 { margin: 0 0 8px; font-size: 2rem; }
+.card ul { list-style: none; padding: 0; margin: 0 0 18px; }
+
+.card button {
+  font: inherit;
+  font-weight: 600;
+  padding: 10px 26px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--goal);
+  color: #0b1020;
+  cursor: pointer;
+}
+
+.overlay[data-kind="lose"] .card button { background: var(--greedy); color: #fff; }
+.card button:focus-visible { outline: 3px solid var(--text); outline-offset: 3px; }
+
+/* Color key under the game */
+.legend { color: var(--muted); font-size: 15px; }
+.dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin: 0 4px 0 14px;
+  vertical-align: middle;
+}
+.dot.player { background: var(--player); }
+.dot.goal { background: var(--goal); border-radius: 3px; }
+.dot.greedy { background: var(--greedy); }
+.dot.hunter { background: var(--hunter); transform: rotate(45deg); border-radius: 2px; }
+.dot.patrol { background: var(--patrol); border-radius: 2px; }

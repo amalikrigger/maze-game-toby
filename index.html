@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Maze Game</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Tells the browser where to find "three" when our code says: import * as THREE from "three" -->
+  <script type="importmap">
+    { "imports": { "three": "./vendor/three/three.module.js" } }
+  </script>
+</head>
+<body>
+  <h1>Maze Game</h1>
+
+  <!-- HUD = "heads-up display": the info bar above the game -->
+  <div id="hud">
+    <span id="level">Level -</span>
+    <span id="lives">Lives</span>
+    <span id="time">Time: 0.0s</span>
+  </div>
+  <p id="msg">Arrow keys or W A S D to move</p>
+
+  <div id="stage">
+    <!-- The 3D canvas is added here by js/renderer.js -->
+
+    <!-- Shown only if the JavaScript could not start (for example, opened by double-click) -->
+    <div id="need-server" class="notice">
+      <strong>The game did not start.</strong>
+      <p>Open a terminal in the game folder and run:</p>
+      <code>python3 -m http.server 8000</code>
+      <p>Then go to <strong>http://localhost:8000</strong> in your browser.</p>
+    </div>
+
+    <!-- Pop-up screen for "You Win!" and "Game Over" -->
+    <div id="overlay" class="overlay" hidden>
+      <div class="card">
+        <h2 id="overlay-title"></h2>
+        <ul id="overlay-lines"></ul>
+        <button type="button" id="play-again">Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="legend">
+    <span class="dot player"></span> You
+    <span class="dot goal"></span> Goal
+    <span class="dot greedy"></span> Chaser
+    <span class="dot hunter"></span> Hunter
+    <span class="dot patrol"></span> Patroller
+  </p>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
