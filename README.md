@@ -18,6 +18,9 @@ Double-clicking `index.html` will **not** work.
 3. Open <http://localhost:8000> in Chrome, Safari or Firefox.
 4. Press `Ctrl+C` in the terminal to stop the server.
 
+If you see `Address already in use`, another server is already using port 8000.
+Use a different number, like `python3 -m http.server 8001`, and open <http://localhost:8001>.
+
 ## How to play
 
 - Move with the **arrow keys** or **W A S D**. Hold a key to keep moving.
