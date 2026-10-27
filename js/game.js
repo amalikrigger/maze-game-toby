@@ -153,11 +153,12 @@ export class Game {
     }
   }
 
-  // SHOOTER: when you are in a straight line with it (up, down, left or right),
-  // no more than `range` squares away and with no wall in between, it:
+  // SHOOTER: when you are in a straight line with it (up, down, left or right)
+  // with no wall in between (no matter how far away), it:
   //   1. AIMS: stops and lights up the squares it will hit (aimMs). Get out of the line!
-  //   2. FIRES: the beam is deadly for fireMs. Walls stop it.
+  //   2. FIRES: the beam is deadly for fireMs. It goes until it hits a wall.
   //   3. RESTS: walks like a Hunter for cooldownMs before it can aim again.
+  // Only one Shooter's beam can be on at a time, so they take turns.
   // Returns "hit" if the beam caught you, "busy" while aiming or firing, or "free" to walk.
   updateShooter(enemy, dtMs) {
     const settings = CONFIG.enemies.shooter;
@@ -188,10 +189,13 @@ export class Game {
     }
 
     // Ready to shoot, standing still on a square, and you're in its line of fire?
-    if (enemy.cooldownMs === 0 && enemy.progress >= 1) {
-      const dir = lineOfFire(this.grid, enemy, this.player, settings.range);
+    // Shooters take turns: none starts aiming while another one's beam is on.
+    // (Otherwise two beams could cross and leave you nowhere safe to stand.)
+    const anotherBeamIsOn = this.enemies.some((e) => e.beam);
+    if (enemy.cooldownMs === 0 && enemy.progress >= 1 && !anotherBeamIsOn) {
+      const dir = lineOfFire(this.grid, enemy, this.player);
       if (dir) {
-        enemy.beam = { dir, squares: beamSquares(this.grid, enemy, dir, settings.range), phase: "aim", timeMs: 0 };
+        enemy.beam = { dir, squares: beamSquares(this.grid, enemy, dir), phase: "aim", timeMs: 0 };
         return "busy";
       }
     }
@@ -199,12 +203,17 @@ export class Game {
   }
 
   // Can this enemy step onto square (x, y)?
-  // Enemies don't step onto each other, or two Chasers would bunch up and look like one.
-  // Patrollers are the exception: other enemies pass right through them (and they pass
-  // through everyone), so a Patroller can never block a hallway.
+  // Enemies don't step onto their own kind, or two Chasers would bunch up and look like one.
+  // But some enemies pass right through each other:
+  //   - Patrollers pass through everyone (and everyone passes through them),
+  //     so a Patroller can never block a hallway.
+  //   - Hunters and Shooters pass through Chasers (and Chasers through them).
+  // So the only enemies that block each other are Chaser + Chaser, and Hunter/Shooter + Hunter/Shooter.
   isBlocked(enemy, x, y) {
     if (enemy.type === "patrol") return false;
-    return this.enemies.some((e) => e !== enemy && e.type !== "patrol" && e.x === x && e.y === y);
+    const isChaser = enemy.type === "greedy";
+    return this.enemies.some((e) =>
+      e !== enemy && e.type !== "patrol" && (e.type === "greedy") === isChaser && e.x === x && e.y === y);
   }
 
   // Caught = an enemy and the player are on the same square.

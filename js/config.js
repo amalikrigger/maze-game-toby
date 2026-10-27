@@ -15,8 +15,7 @@ export const CONFIG = {
     shooter: {                                 // Shooter (letter S)
       stepMs: 600,
       color: "#22d3ee",
-      range: 4,          // how many squares the beam reaches (walls stop it)
-      aimMs: 800,        // warning time: the squares light up before it fires
+      aimMs: 1000,       // warning time: the squares light up before it fires (the beam goes until a wall)
       fireMs: 300,       // how long the beam stays deadly
       cooldownMs: 1500,  // rest time before it can aim again
     },

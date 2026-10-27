@@ -148,9 +148,10 @@ export class Renderer {
     const centerX = (grid.width - 1) / 2;
     const centerZ = (grid.height - 1) / 2;
     const size = Math.max(grid.width, grid.height) * 0.75;
-    this.sun.position.set(centerX - 5, 14, centerZ + 6);
+    // The sun is far away (same direction as before) so its shadows reach every corner of big mazes too
+    this.sun.position.set(centerX - 15, 42, centerZ + 18);
     this.sun.target.position.set(centerX, 0, centerZ);
-    Object.assign(this.sun.shadow.camera, { left: -size, right: size, top: size, bottom: -size, near: 1, far: 40 });
+    Object.assign(this.sun.shadow.camera, { left: -size, right: size, top: size, bottom: -size, near: 1, far: 120 });
     this.sun.shadow.camera.updateProjectionMatrix();
 
     // Jump the player and camera straight to the start (no flying across the map)

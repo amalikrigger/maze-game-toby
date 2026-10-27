@@ -24,13 +24,17 @@ Capstone, Trimester 1, Mr. Krigger. **Due Fri Nov 20, 11:59 PM.**
       level 1 has 4, level 2 has 7, level 3 has 8. A test robot beat each level 63 to 64 times out of 64.
 - [x] Enemies can't stand on the same square (so they don't merge into one)
 - [x] Enemies pass through Patrollers (so a Patroller can't block a hallway)
-- [x] Level 4 (31 x 25) with a new enemy, the Shooter: walks like a Hunter, aims a 4-square beam
-      in a straight line (walls stop it), warns you for 0.8 s, then fires. Robot won 64 / 64.
+- [x] Level 4 (31 x 25) with a new enemy, the Shooter: walks like a Hunter, aims a beam
+      in a straight line that goes until it hits a wall, warns you for 1 s, then fires.
+      Shooters take turns (only one beam on at a time). Robot won 80 / 80.
+- [x] Hunters and Shooters pass through Chasers (and Chasers through them)
+- [x] Level 5: the big one, 51 x 41, with 6 Shooters, 4 Hunters, 2 Chasers, 3 Patrollers and
+      no dead ends. Robot won 79 / 80.
 - [x] Getting caught: lose a life, everyone back to the start, 1 second of blinking
 - [x] 3 lives per level, Game Over screen, Play Again retries the level
 - [x] Timer per level, pauses on pop-up screens
 - [x] HOW-IT-WORKS.md for the final document
-- [ ] Toby plays all 4 levels by hand and checks the controls and camera feel right
+- [ ] Toby plays all 5 levels by hand and checks the controls and camera feel right
 - [ ] Tune speeds in `js/config.js` if the levels are too easy or too hard
 
 ## Phase 2: Could have (before the Nov 13 freeze)
@@ -38,7 +42,7 @@ Capstone, Trimester 1, Mr. Krigger. **Due Fri Nov 20, 11:59 PM.**
 - [ ] Title screen with a Start button and how-to-play
 - [ ] Sounds: step, caught, level complete, win (Web Audio, no downloads needed)
 - [ ] Keys that open doors (new letters, and the level checker must make sure the key is reachable)
-- [ ] More levels (the follow camera already handles 31 x 25 mazes)
+- [ ] More levels (the follow camera handles mazes of any size, up to 51 x 41 tested)
 - [ ] Best times saved in the browser (localStorage)
 - [ ] Touch / swipe controls for phones and tablets
 - [ ] Put the game on the Raspberry Pi website for the showcase
@@ -77,20 +81,22 @@ PROJECT FACTS
 - Run: `python3 -m http.server 8000` in the project folder, open http://localhost:8000
   (use 8001 if 8000 is busy). Opening index.html by double-click does NOT work.
 - Architecture: the RULES are grid-based and know nothing about 3D; the RENDERER only draws.
-  - js/levels.js: ASCII levels, each 31 wide x 25 tall, with loops so enemies can be escaped.
+  - js/levels.js: ASCII levels with loops so enemies can be escaped. L1-L4 are 31 x 25,
+    L5 is 51 x 41.
     Letters: # wall, P start, G goal, E Chaser, H Hunter, S Shooter,
     R Patroller (left-right), V Patroller (up-down), space floor.
     L1: 2E 2 patrol. L2: 4E 3 patrol. L3: 2H 3E 3 patrol. L4: 2S 3E 3 patrol.
-    Enemies sit on/next to the P->G route.
+    L5: 6S 4H 2E 3 patrol, no dead ends. Enemies sit on/next to the P->G route.
   - js/grid.js: parseLevel, isWall, findPath (BFS), validateLevel (equal rows, border walls,
     one P, one G, P->G reachable). main.js validates all levels at startup.
   - js/enemies.js: BRAINS { greedy, hunter, patrol, shooter (= hunter) }, each returns [dx, dy]
-    or null. Also beamSquares and lineOfFire for the Shooter's 4-square beam.
+    or null. Also beamSquares and lineOfFire for the Shooter's beam (goes until a wall).
   - js/game.js: Game class. States "playing" | "gameOver" | "won". Movers have x,y (rules),
     fromX,fromY,progress (visual slide). Square changes at slide START; catch checked after
-    every player or enemy step. Enemies never step onto another non-Patroller enemy; Patrollers
-    phase through everyone (isBlocked). Shooters (updateShooter): aim 800 ms (floor flashes),
-    fire 300 ms (deadly), rest 1500 ms. Lives 3 per level,
+    every player or enemy step. isBlocked: Chaser blocks Chaser, Hunter/Shooter block
+    Hunter/Shooter, everything else passes through (Patrollers pass through everyone).
+    Shooters (updateShooter): aim 1000 ms (floor flashes), fire 300 ms (deadly), rest 1500 ms,
+    only one beam on at a time. Lives 3 per level,
     timer per level, 1s grace after caught
     (enemies frozen, player blinks). view() returns draw positions for the renderer.
   - js/renderer.js: three.js scene, InstancedMesh walls, follow camera clamped to maze edges.
@@ -110,7 +116,7 @@ ROADMAP checkbox and updating HOW-IT-WORKS.md for each feature:
 1. Title screen (Start button, how to play, enemy legend)
 2. Sounds with the Web Audio API (generated beeps/tones, no audio files), with a mute toggle
 3. Keys and doors (new letters; validator must prove every level is solvable with keys)
-4. Two new levels (31 x 25, same as the current ones) that use keys/doors and all enemy types.
+4. Two new levels (31 x 25 like levels 1-4, or bigger like level 5) that use keys/doors and all enemy types.
    Any new level must be checked by a bot that plays it many times with the real Game class
    (human-like 250 ms reaction) and wins nearly every time.
 5. Best time per level saved in localStorage, shown on the Win screen

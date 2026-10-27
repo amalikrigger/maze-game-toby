@@ -2,7 +2,7 @@
 //
 //   #  wall               P  player start        G  goal
 //   E  Chaser enemy       H  Hunter enemy
-//   S  Shooter enemy (zaps you from up to 4 squares away in a straight line)
+//   S  Shooter enemy (zaps you in a straight line, all the way to the next wall)
 //   R  Patroller that walks left and right
 //   V  Patroller that walks up and down
 //   (space)  open floor
@@ -13,10 +13,11 @@
 //   - Each level needs exactly one P and exactly one G.
 //   - There must be a path from P to G.
 //
-// Each maze is 31 squares wide and 25 tall (about twice as big as the starter levels).
+// Levels 1 to 4 are 31 squares wide and 25 tall (about twice as big as the starter levels).
+// Level 5 is the big one: 51 wide and 41 tall.
 // The enemies are placed on or next to the route to the goal, so you WILL run into them.
 // The mazes have loops, so there is always a way to run around an enemy and escape.
-// A test robot played every level 64 times to check it can be beaten.
+// A test robot played every level many times to check it can be beaten.
 
 export const LEVELS = [
   // Level 1: 2 Chasers and 2 Patrollers. Start top-left, goal bottom-right.
@@ -108,33 +109,79 @@ export const LEVELS = [
   ],
 
   // Level 4: 2 Shooters, 3 Chasers and 3 Patrollers. Start top-right, goal bottom-left.
-  // Both Shooters guard the long hallways near the bottom. When the floor
-  // flashes blue, step out of that line before the beam fires!
+  // Shooter beams go all the way to the next wall, so this maze is twisty with short
+  // hallways. When the floor flashes blue, step out of that line before the beam fires!
   [
     "###############################",
-    "#               #         #  P#",
-    "# ### ### ### # # # ### # # # #",
-    "#       #     # # #     # # # #",
-    "# ##### # ##### ####### # # # #",
-    "# #   # #               #   # #",
-    "# # # # # # ################# #",
-    "# # # # # #         #         #",
-    "# # # # # ######### # ####### #",
-    "#   # # # #       # #         #",
-    "##### # # # # # # # # # # ### #",
-    "#       # # # # # # # #   #   #",
-    "# ### # # ### # # # # # ### # #",
-    "#   # # #   # # # # #   #V  # #",
-    "# # # # # # # # # # ##### # # #",
-    "#   # # #     #   # #     # # #",
-    "# # # # ########### # ### # # #",
-    "# # # #          V# #     # # #",
-    "# # # ####### ### # ##### # # #",
-    "# #   #  V  #   # #          E#",
-    "# # # # # # ### # # ### #######",
-    "# #             # #    S      #",
-    "# ####### ####### ########### #",
-    "#G         E         S       E#",
+    "#   #     #       #      V#  P#",
+    "# # # # # # ##### # ##### # # #",
+    "# #   # #   #     # #V  # # # #",
+    "# # ### ### # ##### # # # # # #",
+    "# # #               # #     # #",
+    "# # # ### ########### # ##### #",
+    "# #   #               # #     #",
+    "# ##### # ####### ### # # #####",
+    "#       #   # S        E#     #",
+    "# ##### ### # # ####### # ### #",
+    "# #       # # #         #   # #",
+    "# # ##### # #E# # ####### # # #",
+    "# # #       # # # #     #   # #",
+    "### # ####### # # # # # # # # #",
+    "#   #      V# #     #       # #",
+    "# ### ##### # # # ##### ##### #",
+    "#         # # # #           # #",
+    "##### ### # # # ########### # #",
+    "#     #      E#           #   #",
+    "# #####S##### ######### # ### #",
+    "#       #   #         #       #",
+    "# ####### # ####### # ##### # #",
+    "#G        #         #         #",
     "###############################",
+  ],
+
+  // Level 5: THE BIG ONE. 51 x 41 with 6 Shooters, 4 Hunters, 2 Chasers and 3 Patrollers.
+  // Start top-left, goal bottom-right. There are no dead ends, so you can always keep running.
+  [
+    "###################################################",
+    "#P  #                           #                 #",
+    "# # # ########### # # # ### # # # # # # ### # # # #",
+    "# # # #                 #     #   # #   #   #     #",
+    "# # # # ######### ### # # ### # # # ##### # ##### #",
+    "# #   #                     # #   # #     # #     #",
+    "# # # ### # ### # # # ##### # ##### # # ### # ### #",
+    "#   #     # #         #     #       # # #   #     #",
+    "# ######### # ####### # # # ######### # # # # #####",
+    "# #         #           # #           # # #       #",
+    "# # # # ####### ### ##### # ##### ### # # ### ### #",
+    "#                                     # #   #   # #",
+    "# # # # # # # # #H# ### ##### ####### # ### ### # #",
+    "#     # # # # # #     #            V# # #   #   # #",
+    "# # # # # # # # # #H# ##### ### # # # # # ### ### #",
+    "#   # #     #   # #     #       #   #     #       #",
+    "# # # # # # # ### # ### # ##### # # ####### ### # #",
+    "# #   #   # #V    # E     S   S #   #       #   # #",
+    "# # # # ### ####### # ### ##### ### # ### ### # # #",
+    "# #   # #           #         #   S #     #     # #",
+    "# # # # # ####### # # # ##### ### # ### # # ### # #",
+    "# #   #                     #     #   S   #       #",
+    "# # # # # # ### ########### ####### # # ##### ### #",
+    "# #       #               #         # #     # #   #",
+    "# # ##### # ######### ### # # ####### # # #H# # # #",
+    "# #     #           #     # #     #   #S    # # # #",
+    "# # # # ##### # ### # ##### ### # # # # ### # # # #",
+    "# #         # # #   # #     #       #V  #   # # # #",
+    "# # # ### # # # # ### # ##### # # ##### # # # #E# #",
+    "#   #         #       #     #             # #     #",
+    "##### ######### # ####### # ###############S# ### #",
+    "#               #       # #   #   #         # #   #",
+    "# ### # # ### # ##### # # ### # # # ### ### # # # #",
+    "#       #       #     #     # #   #   #   #  H# # #",
+    "# # ##### # ##### # ### ### # # ##### # # # # # # #",
+    "# #     # #     # #         # #       # # #   #   #",
+    "# # # # # # # # # ##### # # # # # ##### # ##### # #",
+    "# # # #   # # # #           #   #       # #     # #",
+    "# # # ##### # # ##### ######### # ##### # # # ### #",
+    "#           #                   #       #   #    G#",
+    "###################################################",
   ],
 ];

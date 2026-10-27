@@ -44,22 +44,23 @@ function patrol(enemy, grid) {
 export const BRAINS = { greedy, hunter, patrol, shooter: hunter };
 
 // The squares a beam would hit, starting next to `from` and going in direction `dir`.
-// It stops after `range` squares, or sooner if it hits a wall.
-export function beamSquares(grid, from, [dx, dy], range) {
+// It keeps going until it hits a wall. (The outside edge is all wall, so it always stops.)
+export function beamSquares(grid, from, [dx, dy]) {
   const squares = [];
-  for (let step = 1; step <= range; step++) {
-    const x = from.x + dx * step;
-    const y = from.y + dy * step;
-    if (isWall(grid, x, y)) break;
+  let x = from.x + dx;
+  let y = from.y + dy;
+  while (!isWall(grid, x, y)) {
     squares.push({ x, y });
+    x += dx;
+    y += dy;
   }
   return squares;
 }
 
 // Is the player in a beam's path from this Shooter? Returns the direction to fire, or null.
-export function lineOfFire(grid, shooter, player, range) {
+export function lineOfFire(grid, shooter, player) {
   for (const dir of DIRECTIONS) {
-    if (beamSquares(grid, shooter, dir, range).some((s) => s.x === player.x && s.y === player.y)) {
+    if (beamSquares(grid, shooter, dir).some((s) => s.x === player.x && s.y === player.y)) {
       return dir;
     }
   }

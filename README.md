@@ -26,9 +26,9 @@ Use a different number, like `python3 -m http.server 8001`, and open <http://loc
 - Move with the **arrow keys** or **W A S D**. Hold a key to keep moving.
 - Reach the **green pad** to go to the next level.
 - Don't get caught by the enemies. You have **3 lives** on each level.
-- **Shooters** (cyan) zap you from up to 4 squares away in a straight line. When the floor
+- **Shooters** (cyan) zap you in a straight line, all the way to the next wall. When the floor
   flashes blue, step out of that line!
-- Finish level 4 to win.
+- Finish level 5 (the big one) to win.
 
 ## Project files
 
