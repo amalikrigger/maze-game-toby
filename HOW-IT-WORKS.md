@@ -93,8 +93,31 @@ The Hunter takes the first step of that path, then does the whole search again o
 
 ### Patroller (`R` and `V`): back and forth
 The Patroller ignores you completely. It walks in a straight line and turns around when the next
-square is a wall. On level 3 it guards the hallway to the goal, so you have to time your run
-(or hide in the little dead end next to it).
+square is a wall. Patrollers are placed in hallways that cross your route to the goal, so you
+have to time your run past them.
+
+### Enemies don't stack
+An enemy will never step onto a square where another enemy is standing. It waits for its next
+turn instead. Without this rule, Chasers that start near each other would all follow the same
+steps, end up on the same square, and look like one enemy.
+
+### Where the enemies are placed
+Every level is 31 squares wide and 25 tall, and the enemies are put on or right next to the route
+from `P` to `G`, so you have to deal with them. Level 1 has 4 enemies, level 2 has 7, and level 3
+has 8 (including 2 Hunters). The mazes have **loops** (more than one way around), so you can
+always lead an enemy around a loop and escape. The player is about 3 times faster than any enemy.
+
+To make sure every level can be beaten, a test robot played each level 64 times using the real game
+rules. It only looks at the enemies every quarter second, like a person would.
+
+| Level | Enemies | Robot won | Robot caught (average) |
+| --- | --- | --- | --- |
+| 1 | 2 Chasers, 2 Patrollers | 64 / 64 | 0 times |
+| 2 | 4 Chasers, 3 Patrollers | 63 / 64 | 0.05 times |
+| 3 | 2 Hunters, 3 Chasers, 3 Patrollers | 64 / 64 | 1 time |
+
+The robot can see the whole maze, but you only see the part near you, so expect it to be harder
+for a person. That's what the playtest is for.
 
 ## 5. Getting caught (`checkCaught` in `js/game.js`)
 
@@ -141,4 +164,4 @@ About 60 times a second, the browser calls `frame`, which:
 
 - Change speeds and colors in `js/config.js`.
 - Redraw a maze in `js/levels.js`. Break a rule on purpose (make a row too short) and look at the console.
-- Put an `H` in level 2 and see how much harder it is than the `E`.
+- Put an `H` in level 1 and see how much harder it is than the `E`.

@@ -147,19 +147,23 @@ export class Renderer {
   updateCameraFocus() {
     const { height, distanceBack, edgeMargin } = CONFIG.camera;
 
-    // How many squares the camera can see from the middle of the screen to its left/right edge
-    const distance = Math.hypot(height, distanceBack);
-    const halfFov = THREE.MathUtils.degToRad(this.camera.fov / 2);
-    const halfVisibleWidth = distance * Math.tan(halfFov) * this.camera.aspect;
-
     // Keep value between low and high. If the maze is too small for that, use the middle.
     const keepInside = (value, low, high) => (low > high ? (low + high) / 2 : Math.min(Math.max(value, low), high));
 
     const p = this.player.position;
+    const focusZ = keepInside(p.z, edgeMargin, this.levelHeight - 1 - edgeMargin);
+
+    // How many squares the camera can see from the middle of the screen to its left/right edge,
+    // measured on the player's row. Rows closer to the camera show fewer squares across.
+    const distance = Math.hypot(height, distanceBack);
+    const depth = distance - Math.max(0, p.z - focusZ) * (distanceBack / distance);
+    const halfFov = THREE.MathUtils.degToRad(this.camera.fov / 2);
+    const halfVisibleWidth = depth * Math.tan(halfFov) * this.camera.aspect;
+
     this.cameraFocus.set(
       keepInside(p.x, halfVisibleWidth - 0.5, this.levelWidth - 0.5 - halfVisibleWidth),
       0,
-      keepInside(p.z, edgeMargin, this.levelHeight - 1 - edgeMargin),
+      focusZ,
     );
   }
 

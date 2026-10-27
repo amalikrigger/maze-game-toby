@@ -19,7 +19,10 @@ Capstone, Trimester 1, Mr. Krigger. **Due Fri Nov 20, 11:59 PM.**
 - [x] 3D view with a camera that follows the player
 - [x] Reaching the goal opens the next level
 - [x] Win screen after level 3, showing the time for each level, with Play Again
-- [x] Enemies: Chaser (level 2), Hunter and Patroller (level 3)
+- [x] Enemies: Chaser, Hunter and Patroller
+- [x] Levels made twice as big (31 x 25) with more enemies placed on the route:
+      level 1 has 4, level 2 has 7, level 3 has 8. A test robot beat each level 63 to 64 times out of 64.
+- [x] Enemies can't stand on the same square (so they don't merge into one)
 - [x] Getting caught: lose a life, everyone back to the start, 1 second of blinking
 - [x] 3 lives per level, Game Over screen, Play Again retries the level
 - [x] Timer per level, pauses on pop-up screens
@@ -32,7 +35,7 @@ Capstone, Trimester 1, Mr. Krigger. **Due Fri Nov 20, 11:59 PM.**
 - [ ] Title screen with a Start button and how-to-play
 - [ ] Sounds: step, caught, level complete, win (Web Audio, no downloads needed)
 - [ ] Keys that open doors (new letters, and the level checker must make sure the key is reachable)
-- [ ] More levels, including bigger ones (the follow camera already handles big mazes)
+- [ ] More levels (the follow camera already handles 31 x 25 mazes)
 - [ ] Best times saved in the browser (localStorage)
 - [ ] Touch / swipe controls for phones and tablets
 - [ ] Put the game on the Raspberry Pi website for the showcase
@@ -71,14 +74,17 @@ PROJECT FACTS
 - Run: `python3 -m http.server 8000` in the project folder, open http://localhost:8000
   (use 8001 if 8000 is busy). Opening index.html by double-click does NOT work.
 - Architecture: the RULES are grid-based and know nothing about 3D; the RENDERER only draws.
-  - js/levels.js: ASCII levels. Letters: # wall, P start, G goal, E Chaser, H Hunter,
+  - js/levels.js: ASCII levels, each 31 wide x 25 tall, with loops so enemies can be escaped.
+    Letters: # wall, P start, G goal, E Chaser, H Hunter,
     R Patroller (left-right), V Patroller (up-down), space floor.
+    L1: 2E 2 patrol. L2: 4E 3 patrol. L3: 2H 3E 3 patrol. Enemies sit on/next to the P->G route.
   - js/grid.js: parseLevel, isWall, findPath (BFS), validateLevel (equal rows, border walls,
     one P, one G, P->G reachable). main.js validates all levels at startup.
   - js/enemies.js: BRAINS { greedy, hunter, patrol }, each returns [dx, dy] or null.
   - js/game.js: Game class. States "playing" | "gameOver" | "won". Movers have x,y (rules),
     fromX,fromY,progress (visual slide). Square changes at slide START; catch checked after
-    every player or enemy step. Lives 3 per level, timer per level, 1s grace after caught
+    every player or enemy step. Enemies never step onto another enemy. Lives 3 per level,
+    timer per level, 1s grace after caught
     (enemies frozen, player blinks). view() returns draw positions for the renderer.
   - js/renderer.js: three.js scene, InstancedMesh walls, follow camera clamped to maze edges.
   - js/input.js: arrows + WASD, held keys + one queued tap.
@@ -97,7 +103,9 @@ ROADMAP checkbox and updating HOW-IT-WORKS.md for each feature:
 1. Title screen (Start button, how to play, enemy legend)
 2. Sounds with the Web Audio API (generated beeps/tones, no audio files), with a mute toggle
 3. Keys and doors (new letters; validator must prove every level is solvable with keys)
-4. Two new, larger levels that use keys/doors and all enemy types
+4. Two new levels (31 x 25, same as the current ones) that use keys/doors and all enemy types.
+   Any new level must be checked by a bot that plays it many times with the real Game class
+   (human-like 250 ms reaction) and wins nearly every time.
 5. Best time per level saved in localStorage, shown on the Win screen
 6. Touch/swipe controls for phones and tablets
 7. Notes for putting the game on the Raspberry Pi website

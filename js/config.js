@@ -26,9 +26,9 @@ export const CONFIG = {
 
   camera: {
     fov: 50,          // how wide the camera sees, in degrees
-    height: 10,       // how high above the player
-    distanceBack: 7,  // how far behind (south of) the player
+    height: 14,       // how high above the player
+    distanceBack: 9,  // how far behind (south of) the player
     followSpeed: 6,   // how quickly the camera catches up with the player
-    edgeMargin: 4,    // going up/down, the camera stops following this many squares from the maze edge
+    edgeMargin: 6,    // going up/down, the camera stops following this many squares from the maze edge
   },
 };

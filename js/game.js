@@ -137,9 +137,17 @@ export class Game {
       enemy.stepTimer -= stepMs;
 
       const move = BRAINS[enemy.type](enemy, this.grid, this.player);
-      if (move) startSlide(enemy, move[0], move[1]);
+      // Enemies never step onto each other. Otherwise two Chasers would bunch up
+      // and look like one enemy. A blocked enemy just waits for its next turn.
+      if (move && !this.enemyAt(enemy.x + move[0], enemy.y + move[1])) {
+        startSlide(enemy, move[0], move[1]);
+      }
       if (this.checkCaught()) return; // did an enemy just step onto us?
     }
+  }
+
+  enemyAt(x, y) {
+    return this.enemies.some((e) => e.x === x && e.y === y);
   }
 
   // Caught = an enemy and the player are on the same square.
