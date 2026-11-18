@@ -30,11 +30,28 @@ Capstone, Trimester 1, Mr. Krigger. **Due Fri Nov 20, 11:59 PM.**
 - [x] Hunters and Shooters pass through Chasers (and Chasers through them)
 - [x] Level 5: the big one, 51 x 41, with 6 Shooters, 4 Hunters, 2 Chasers, 3 Patrollers and
       no dead ends. Robot won 79 / 80.
+- [x] Mimic enemy (letter M, level 5 and up): copies a random Hunter, Shooter, Ghost or Splitter
+      every 10 s and looks exactly like it. Its Splitter copies are Mimics too and stay split.
+- [x] Level 6: the giant maze, 71 x 57, twisty with few loops, no Shooters, 5 Mimics. The goal
+      never moves and has only one way in. Robot won 39 / 40.
+- [x] Ghosts slowed to Hunter speed; Splitters no longer speed up when they split
+- [x] Vortex enemy (letter O, level 6 and up): pulls you and enemies within 15 squares (escapable),
+      swallows enemies and spits them out 10 squares ahead of you after 5 s
+- [x] Portaler enemy (letter T, level 5 and up): harmless, wanders, makes a faint portal every 5 s
+      that sends you or any enemy to a random spot (3 portals each at a time)
+- [x] Shade enemy (letter D, level 6): slow Hunter; within 10 squares of it, everything farther than
+      4 squares from you goes black and the camera zooms back in
+- [x] Deceiver enemy (letter X, level 6): wanders; at every intersection it splits down every open
+      way (even back), only one of each group is real (fakes are harmless and everyone phases through them).
+      Fakes that split make one more real one. Max 16 per level.
 - [x] Getting caught: lose a life, everyone back to the start, 1 second of blinking
 - [x] 3 lives per level, Game Over screen, Play Again retries the level
 - [x] Timer per level, pauses on pop-up screens
 - [x] HOW-IT-WORKS.md for the final document
-- [ ] Toby plays all 5 levels by hand and checks the controls and camera feel right
+- [x] Difficulty menu: Easy (5 lives, slower enemies), Normal, Hard (faster enemies and a new
+      random maze for every level, with a maze number you can replay). Every random Hard maze
+      the robot tried was beatable.
+- [ ] Toby plays all 6 levels by hand and checks the controls and camera feel right
 - [ ] Tune speeds in `js/config.js` if the levels are too easy or too hard
 
 ## Phase 2: Could have (before the Nov 13 freeze)

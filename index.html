@@ -33,11 +33,16 @@
       <p>Then go to <strong>http://localhost:8000</strong> in your browser.</p>
     </div>
 
-    <!-- Pop-up screen for "You Win!" and "Game Over" -->
+    <!-- Pop-up screen for picking a difficulty, "You Win!" and "Game Over" -->
     <div id="overlay" class="overlay" hidden>
       <div class="card">
         <h2 id="overlay-title"></h2>
         <ul id="overlay-lines"></ul>
+        <div id="difficulty-buttons" class="difficulty-buttons" hidden>
+          <button type="button" data-difficulty="easy">Easy</button>
+          <button type="button" data-difficulty="normal">Normal</button>
+          <button type="button" data-difficulty="hard">Hard</button>
+        </div>
         <button type="button" id="play-again">Play Again</button>
       </div>
     </div>
@@ -50,6 +55,13 @@
     <span class="dot hunter"></span> Hunter
     <span class="dot patrol"></span> Patroller
     <span class="dot shooter"></span> Shooter
+    <span class="dot ghost"></span> Ghost
+    <span class="dot splitter"></span> Splitter
+    <span class="dot mimic">?</span> Mimic
+    <span class="dot vortex"></span> Vortex
+    <span class="dot portaler"></span> Portaler
+    <span class="dot shade"></span> Shade
+    <span class="dot deceiver"></span> Deceiver
   </p>
 
   <script type="module" src="js/main.js"></script>

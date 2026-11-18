@@ -10,6 +10,13 @@ export const ENEMY_LETTERS = {
   R: { type: "patrol", dir: [1, 0] }, // starts walking right
   V: { type: "patrol", dir: [0, 1] }, // starts walking down
   S: { type: "shooter" },
+  W: { type: "ghost" },
+  B: { type: "splitter" },
+  M: { type: "hunter", isMimic: true }, // the game picks its real ability when the level starts
+  O: { type: "vortex" },
+  T: { type: "portaler" },
+  D: { type: "shade" },
+  X: { type: "deceiver" },
 };
 
 // The four ways you can step: up, down, left, right
